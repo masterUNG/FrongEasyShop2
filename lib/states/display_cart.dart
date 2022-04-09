@@ -1,16 +1,22 @@
 // ignore_for_file: avoid_print
 
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frongeasyshop/models/product_model.dart';
 import 'package:frongeasyshop/models/profile_shop_model.dart';
 import 'package:frongeasyshop/models/sqlite_model.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
+import 'package:frongeasyshop/utility/my_dialog.dart';
 import 'package:frongeasyshop/utility/sqlite_helper.dart';
+import 'package:frongeasyshop/widgets/show_image_from_url.dart';
 import 'package:frongeasyshop/widgets/show_logo.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
 import 'package:frongeasyshop/widgets/show_svg.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class DisplayCart extends StatefulWidget {
   const DisplayCart({
@@ -105,37 +111,7 @@ class _DisplayCartState extends State<DisplayCart> {
                       ),
                       newTotal(),
                       newControlButton(),
-                      displayPromptPay
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    const SizedBox(
-                                        width: 200,
-                                        height: 200,
-                                        child: ShowLogo(
-                                          path: 'images/promptpay.png',
-                                        )),
-                                    Row(
-                                      
-                                      children: [
-                                        ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text(
-                                                'Download PromptPay')),
-                                                const SizedBox(width: 16,),
-                                        ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text(
-                                                'โอนสลิปการจ่ายเงิน'))
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : const SizedBox()
+                      displayPromptPay ? showPromptPay() : const SizedBox()
                     ],
                   ),
                 )
@@ -145,6 +121,53 @@ class _DisplayCartState extends State<DisplayCart> {
                     textStyle: MyConstant().h2Style(),
                   ),
                 ),
+    );
+  }
+
+  Row showPromptPay() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            const SizedBox(
+              width: 200,
+              height: 200,
+              child: ShowImageFromUrl(
+                  path:
+                      'https://www.androidthai.in.th/election/promptpay/promptpay.png'),
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () async {
+                      var response = await Dio().get(
+                          "https://www.androidthai.in.th/election/promptpay/promptpay.png",
+                          options: Options(responseType: ResponseType.bytes));
+                      final result = await ImageGallerySaver.saveImage(
+                          Uint8List.fromList(response.data),
+                          quality: 60,
+                          name: "promptpay");
+                      print(result);
+                      if (result['isSuccess']) {
+                        print('success True');
+                        MyDialog().normalDialog(context, 'Download Success',
+                            'ไปเปิดแอพธนาคา และ Scan PromptPay พร้อม เก็บ Slip และ อัพโหลด Slip เพื่อยืนยันการจ่ายเงิน');
+                      } else {
+                        print('success False');
+                      }
+                    },
+                    child: const Text('Download PromptPay')),
+                const SizedBox(
+                  width: 16,
+                ),
+                ElevatedButton(
+                    onPressed: () {}, child: const Text('โอนสลิปการจ่ายเงิน'))
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 

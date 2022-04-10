@@ -1,12 +1,14 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:frongeasyshop/models/product_model.dart';
 import 'package:frongeasyshop/models/profile_shop_model.dart';
 import 'package:frongeasyshop/models/sqlite_model.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
@@ -36,11 +38,19 @@ class _DisplayCartState extends State<DisplayCart> {
 
   bool displayPromptPay = false;
   File? file;
+  String? uidBuyer, typeTransfer, typePayment;
 
   @override
   void initState() {
     super.initState();
     readSQLite();
+    findUidBuyer();
+  }
+
+  Future<void> findUidBuyer() async {
+    await FirebaseAuth.instance.authStateChanges().listen((event) {
+      uidBuyer = event!.uid;
+    });
   }
 
   Future<void> readSQLite() async {
@@ -113,6 +123,8 @@ class _DisplayCartState extends State<DisplayCart> {
                         ),
                         newTotal(),
                         newControlButton(),
+                        newTypeTransfer(),
+                        newTypePayment(),
                         displayPromptPay ? showPromptPay() : const SizedBox(),
                         file == null
                             ? const SizedBox()
@@ -129,7 +141,28 @@ class _DisplayCartState extends State<DisplayCart> {
                                         child: Image.file(file!),
                                       ),
                                       ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            String nameSlip =
+                                                '$uidBuyer${Random().nextInt(1000)}.jpg';
+                                            FirebaseStorage firebaseStorage =
+                                                FirebaseStorage.instance;
+                                            Reference reference =
+                                                firebaseStorage
+                                                    .ref()
+                                                    .child('slip/$nameSlip');
+                                            UploadTask uploadTask =
+                                                reference.putFile(file!);
+                                            await uploadTask
+                                                .whenComplete(() async {
+                                              await reference
+                                                  .getDownloadURL()
+                                                  .then((value) async {
+                                                String urlSlip =
+                                                    value.toString();
+                                                print('urlSlip ==> $urlSlip');
+                                              });
+                                            });
+                                          },
                                           child: const Text(
                                               'Upload สลิปการจ่ายเงิน'))
                                     ],
@@ -147,6 +180,70 @@ class _DisplayCartState extends State<DisplayCart> {
                   ),
                 ),
     );
+  }
+
+  Column newTypeTransfer() {
+    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShowText(
+                            title: 'เลือกสะถานที่จัดส่ง',
+                            textStyle: MyConstant().h2Style(),
+                          ),
+                          RadioListTile(
+                            title: const ShowText(title: 'รับที่ร้าน'),
+                            value: 'onShop',
+                            groupValue: typeTransfer,
+                            onChanged: (value) {
+                              setState(() {
+                                typeTransfer = value.toString();
+                              });
+                            },
+                          ),
+                          RadioListTile(
+                            title: const ShowText(title: 'เดลิเวอร์รี่'),
+                            value: 'delivary',
+                            groupValue: typeTransfer,
+                            onChanged: (value) {
+                              setState(() {
+                                typeTransfer = value.toString();
+                              });
+                            },
+                          ),
+                        ],
+                      );
+  }
+
+  Column newTypePayment() {
+    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShowText(
+                            title: 'เลือกสะถานที่จัดส่ง',
+                            textStyle: MyConstant().h2Style(),
+                          ),
+                          RadioListTile(
+                            title: const ShowText(title: 'รับที่ร้าน'),
+                            value: 'onShop',
+                            groupValue: typeTransfer,
+                            onChanged: (value) {
+                              setState(() {
+                                typeTransfer = value.toString();
+                              });
+                            },
+                          ),
+                          RadioListTile(
+                            title: const ShowText(title: 'เดลิเวอร์รี่'),
+                            value: 'delivary',
+                            groupValue: typeTransfer,
+                            onChanged: (value) {
+                              setState(() {
+                                typeTransfer = value.toString();
+                              });
+                            },
+                          ),
+                        ],
+                      );
   }
 
   Row showPromptPay() {

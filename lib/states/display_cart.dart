@@ -94,26 +94,50 @@ class _DisplayCartState extends State<DisplayCart> {
           : haveData!
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ShowText(
-                        title: profileShopModel!.nameShop,
-                        textStyle: MyConstant().h1Style(),
-                      ),
-                      ShowText(
-                        title: profileShopModel!.address,
-                        textStyle: MyConstant().h3Style(),
-                      ),
-                      showHead(),
-                      listCart(),
-                      const Divider(
-                        color: Colors.blue,
-                      ),
-                      newTotal(),
-                      newControlButton(),
-                      displayPromptPay ? showPromptPay() : const SizedBox()
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ShowText(
+                          title: profileShopModel!.nameShop,
+                          textStyle: MyConstant().h1Style(),
+                        ),
+                        ShowText(
+                          title: profileShopModel!.address,
+                          textStyle: MyConstant().h3Style(),
+                        ),
+                        showHead(),
+                        listCart(),
+                        const Divider(
+                          color: Colors.blue,
+                        ),
+                        newTotal(),
+                        newControlButton(),
+                        displayPromptPay ? showPromptPay() : const SizedBox(),
+                        file == null
+                            ? const SizedBox()
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 32),
+                                        width: 250,
+                                        height: 250,
+                                        child: Image.file(file!),
+                                      ),
+                                      ElevatedButton(
+                                          onPressed: () {},
+                                          child: const Text(
+                                              'Upload สลิปการจ่ายเงิน'))
+                                    ],
+                                  ),
+                                ],
+                              ),
+                      ],
+                    ),
                   ),
                 )
               : Center(
@@ -168,8 +192,11 @@ class _DisplayCartState extends State<DisplayCart> {
                         source: ImageSource.gallery,
                         maxWidth: 800,
                         maxHeight: 800);
+                    setState(() {
+                      file = File(result!.path);
+                    });
                   },
-                  child: const Text('โอนสลิปการจ่ายเงิน'),
+                  child: const Text('เลือกสลิปการจ่ายเงิน'),
                 ),
               ],
             ),

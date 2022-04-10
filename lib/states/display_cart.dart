@@ -42,6 +42,8 @@ class _DisplayCartState extends State<DisplayCart> {
   String typeTransfer = 'onShop';
   String typePayment = 'promptPay';
 
+  String urlSlip = '';
+
   @override
   void initState() {
     super.initState();
@@ -170,9 +172,9 @@ class _DisplayCartState extends State<DisplayCart> {
                                               await reference
                                                   .getDownloadURL()
                                                   .then((value) async {
-                                                String urlSlip =
-                                                    value.toString();
+                                                urlSlip = value.toString();
                                                 print('urlSlip ==> $urlSlip');
+                                                processSaveOrder();
                                               });
                                             });
                                           },
@@ -286,8 +288,11 @@ class _DisplayCartState extends State<DisplayCart> {
                       print(result);
                       if (result['isSuccess']) {
                         print('success True');
-                        MyDialog().normalDialog(context, 'Download Success',
-                            'ไปเปิดแอพธนาคา และ Scan PromptPay พร้อม เก็บ Slip และ อัพโหลด Slip เพื่อยืนยันการจ่ายเงิน');
+                        MyDialog().normalDialog(
+                          context,
+                          'Download Success',
+                          'ไปเปิดแอพธนาคา และ Scan PromptPay พร้อม เก็บ Slip และ อัพโหลด Slip เพื่อยืนยันการจ่ายเงิน',
+                        );
                       } else {
                         print('success False');
                       }
@@ -491,6 +496,15 @@ class _DisplayCartState extends State<DisplayCart> {
   }
 
   Future<void> processSaveOrder() async {
-    print('uidBuyer = $uidBuyer, mapSQLiteModel = ${sqliteModels[0].toMap()}');
+    var mapOrders = <Map<String, dynamic>>[];
+    for (var item in sqliteModels) {
+      mapOrders.add(item.toMap());
+    }
+
+    Timestamp dateOrder = Timestamp.fromDate(DateTime.now());
+    
+    
+
+    print('uidBuyer = $uidBuyer, typePayment = $typePayment, typeTransfer = $typeTransfer');
   }
 }

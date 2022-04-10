@@ -4,8 +4,8 @@ import 'package:frongeasyshop/widgets/show_logo.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
 
 class MyDialog {
-  Future<void> normalDialog(
-      BuildContext context, String title, String message) async {
+  Future<void> normalDialog(BuildContext context, String title, String message,
+      {Function()? pressFunc}) async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -16,7 +16,15 @@ class MyDialog {
             textStyle: MyConstant().h2Style(),
           ),
           subtitle: ShowText(title: message),
-        ),actions: [TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('OK'))],
+        ),
+        actions: [
+          TextButton(
+            onPressed: pressFunc ?? (){
+               Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }

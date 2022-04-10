@@ -36,9 +36,11 @@ class _DisplayCartState extends State<DisplayCart> {
   ProfileShopModel? profileShopModel;
   int total = 0;
 
-  bool displayPromptPay = false;
+  bool displayConfirmOrder = false;
   File? file;
-  String? uidBuyer, typeTransfer, typePayment;
+  String? uidBuyer;
+  String typeTransfer = 'onShop';
+  String typePayment = 'promptPay';
 
   @override
   void initState() {
@@ -123,9 +125,20 @@ class _DisplayCartState extends State<DisplayCart> {
                         ),
                         newTotal(),
                         newControlButton(),
-                        newTypeTransfer(),
-                        newTypePayment(),
-                        displayPromptPay ? showPromptPay() : const SizedBox(),
+                        displayConfirmOrder
+                            ? newTypeTransfer()
+                            : const SizedBox(),
+                        displayConfirmOrder
+                            ? newTypePayment()
+                            : const SizedBox(),
+                        (displayConfirmOrder && (typePayment == 'promptPay'))
+                            ? showPromptPay()
+                            : displayConfirmOrder
+                                ? ElevatedButton(
+                                    onPressed: () {},
+                                    child: const Text('ยืนยันการสั่งซื้อ'),
+                                  )
+                                : const SizedBox(),
                         file == null
                             ? const SizedBox()
                             : Row(
@@ -164,7 +177,7 @@ class _DisplayCartState extends State<DisplayCart> {
                                             });
                                           },
                                           child: const Text(
-                                              'Upload สลิปการจ่ายเงิน'))
+                                              'อัพโหลด สลิปการจ่ายเงิน ยืนยันการสั่งซื้อ'))
                                     ],
                                   ),
                                 ],
@@ -184,66 +197,66 @@ class _DisplayCartState extends State<DisplayCart> {
 
   Column newTypeTransfer() {
     return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ShowText(
-                            title: 'เลือกสะถานที่จัดส่ง',
-                            textStyle: MyConstant().h2Style(),
-                          ),
-                          RadioListTile(
-                            title: const ShowText(title: 'รับที่ร้าน'),
-                            value: 'onShop',
-                            groupValue: typeTransfer,
-                            onChanged: (value) {
-                              setState(() {
-                                typeTransfer = value.toString();
-                              });
-                            },
-                          ),
-                          RadioListTile(
-                            title: const ShowText(title: 'เดลิเวอร์รี่'),
-                            value: 'delivary',
-                            groupValue: typeTransfer,
-                            onChanged: (value) {
-                              setState(() {
-                                typeTransfer = value.toString();
-                              });
-                            },
-                          ),
-                        ],
-                      );
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ShowText(
+          title: 'เลือกสะถานที่จัดส่ง',
+          textStyle: MyConstant().h2Style(),
+        ),
+        RadioListTile(
+          title: const ShowText(title: 'รับที่ร้าน'),
+          value: 'onShop',
+          groupValue: typeTransfer,
+          onChanged: (value) {
+            setState(() {
+              typeTransfer = value.toString();
+            });
+          },
+        ),
+        RadioListTile(
+          title: const ShowText(title: 'เดลิเวอร์รี่'),
+          value: 'delivery',
+          groupValue: typeTransfer,
+          onChanged: (value) {
+            setState(() {
+              typeTransfer = value.toString();
+            });
+          },
+        ),
+      ],
+    );
   }
 
   Column newTypePayment() {
     return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ShowText(
-                            title: 'เลือกสะถานที่จัดส่ง',
-                            textStyle: MyConstant().h2Style(),
-                          ),
-                          RadioListTile(
-                            title: const ShowText(title: 'รับที่ร้าน'),
-                            value: 'onShop',
-                            groupValue: typeTransfer,
-                            onChanged: (value) {
-                              setState(() {
-                                typeTransfer = value.toString();
-                              });
-                            },
-                          ),
-                          RadioListTile(
-                            title: const ShowText(title: 'เดลิเวอร์รี่'),
-                            value: 'delivary',
-                            groupValue: typeTransfer,
-                            onChanged: (value) {
-                              setState(() {
-                                typeTransfer = value.toString();
-                              });
-                            },
-                          ),
-                        ],
-                      );
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ShowText(
+          title: 'ช่องทางการชำระเงิน',
+          textStyle: MyConstant().h2Style(),
+        ),
+        RadioListTile(
+          title: const ShowText(title: 'พร้อมเพย์'),
+          value: 'promptPay',
+          groupValue: typePayment,
+          onChanged: (value) {
+            setState(() {
+              typePayment = value.toString();
+            });
+          },
+        ),
+        RadioListTile(
+          title: const ShowText(title: 'เก็บเงินปลายทาง'),
+          value: 'cashDelivery',
+          groupValue: typePayment,
+          onChanged: (value) {
+            setState(() {
+              typePayment = value.toString();
+            });
+          },
+        ),
+      ],
+    );
   }
 
   Row showPromptPay() {
@@ -355,7 +368,7 @@ class _DisplayCartState extends State<DisplayCart> {
               //     .deleteAllData()
               //     .then((value) => readSQLite());
 
-              displayPromptPay = true;
+              displayConfirmOrder = true;
 
               setState(() {});
             },

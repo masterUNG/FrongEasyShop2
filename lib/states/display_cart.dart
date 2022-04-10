@@ -135,7 +135,7 @@ class _DisplayCartState extends State<DisplayCart> {
                             ? showPromptPay()
                             : displayConfirmOrder
                                 ? ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () => processSaveOrder(),
                                     child: const Text('ยืนยันการสั่งซื้อ'),
                                   )
                                 : const SizedBox(),
@@ -488,5 +488,9 @@ class _DisplayCartState extends State<DisplayCart> {
         ],
       ),
     );
+  }
+
+  Future<void> processSaveOrder() async {
+    print('uidBuyer = $uidBuyer, mapSQLiteModel = ${sqliteModels[0].toMap()}');
   }
 }

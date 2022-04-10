@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,11 +13,10 @@ import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/utility/my_dialog.dart';
 import 'package:frongeasyshop/utility/sqlite_helper.dart';
 import 'package:frongeasyshop/widgets/show_image_from_url.dart';
-import 'package:frongeasyshop/widgets/show_logo.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
-import 'package:frongeasyshop/widgets/show_svg.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DisplayCart extends StatefulWidget {
   const DisplayCart({
@@ -35,6 +35,7 @@ class _DisplayCartState extends State<DisplayCart> {
   int total = 0;
 
   bool displayPromptPay = false;
+  File? file;
 
   @override
   void initState() {
@@ -162,7 +163,14 @@ class _DisplayCartState extends State<DisplayCart> {
                   width: 16,
                 ),
                 ElevatedButton(
-                    onPressed: () {}, child: const Text('โอนสลิปการจ่ายเงิน'))
+                  onPressed: () async {
+                    var result = await ImagePicker().pickImage(
+                        source: ImageSource.gallery,
+                        maxWidth: 800,
+                        maxHeight: 800);
+                  },
+                  child: const Text('โอนสลิปการจ่ายเงิน'),
+                ),
               ],
             ),
           ],

@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:frongeasyshop/models/order_model.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
@@ -18,6 +19,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   var user = FirebaseAuth.instance.currentUser;
   bool load = true;
   bool? haveData;
+  var orderModels = <OrderModel>[];
 
   @override
   void initState() {
@@ -36,6 +38,15 @@ class _OrderHistoryState extends State<OrderHistory> {
         haveData = false;
       } else {
         haveData = true;
+        for (var item in value.docs) {
+          // print('item ===> ${item.data()}');
+
+          var mapOrders = item.data()['mapOrders'];
+          print('mapOrders ===> $mapOrders');
+
+          // OrderModel orderModel = OrderModel.fromMap(item.data());
+          // orderModels.add(orderModel);
+        }
       }
       load = false;
       setState(() {});
@@ -52,7 +63,10 @@ class _OrderHistoryState extends State<OrderHistory> {
       body: load
           ? const ShowProcess()
           : haveData!
-              ? Text('user ==> ${user!.uid}')
+              ? ListView.builder(
+                  itemCount: 2,
+                  itemBuilder: (context, index) => ShowText(title: 'Order'),
+                )
               : Center(
                   child: ShowText(
                     title: 'No Order',

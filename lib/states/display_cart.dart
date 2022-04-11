@@ -9,6 +9,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:frongeasyshop/models/order_model.dart';
+import 'package:frongeasyshop/models/product_model.dart';
 import 'package:frongeasyshop/models/profile_shop_model.dart';
 import 'package:frongeasyshop/models/sqlite_model.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
@@ -335,46 +337,8 @@ class _DisplayCartState extends State<DisplayCart> {
           width: 4,
         ),
         ElevatedButton(
-            onPressed: () async {
-              // ระบบตัด Stock และ Clear ตระกล้า
-
-              // for (var item in sqliteModels) {
-              //   await FirebaseFirestore.instance
-              //       .collection('user')
-              //       .doc(item.docUser)
-              //       .collection('stock')
-              //       .doc(item.docStock)
-              //       .collection('product')
-              //       .doc(item.docProduct)
-              //       .get()
-              //       .then((value) async {
-              //     ProductModel productModel =
-              //         ProductModel.fromMap(value.data()!);
-              //     int newAmountProduct =
-              //         productModel.amountProduct - int.parse(item.amount);
-
-              //     Map<String, dynamic> data = {};
-              //     data['amountProduct'] = newAmountProduct;
-
-              //     await FirebaseFirestore.instance
-              //         .collection('user')
-              //         .doc(item.docUser)
-              //         .collection('stock')
-              //         .doc(item.docStock)
-              //         .collection('product')
-              //         .doc(item.docProduct)
-              //         .update(data)
-              //         .then((value) {
-              //       print('Success Update ${item.nameProduct}');
-              //     });
-              //   });
-              // }
-              // await SQLiteHelper()
-              //     .deleteAllData()
-              //     .then((value) => readSQLite());
-
+            onPressed: () {
               displayConfirmOrder = true;
-
               setState(() {});
             },
             child: const Text('สั่งซื้อ')),
@@ -502,9 +466,62 @@ class _DisplayCartState extends State<DisplayCart> {
     }
 
     Timestamp dateOrder = Timestamp.fromDate(DateTime.now());
-    
-    
 
-    print('uidBuyer = $uidBuyer, typePayment = $typePayment, typeTransfer = $typeTransfer');
+    OrderModel orderModel = OrderModel(
+        dateOrder: dateOrder,
+        mapOrders: mapOrders,
+        status: 'order',
+        totalOrder: total.toString(),
+        typePayment: typePayment,
+        typeTransfer: typeTransfer,
+        uidBuyer: uidBuyer!,
+        uidShopper: sqliteModels[0].docUser,
+        urlSlip: urlSlip);
+
+    await FirebaseFirestore.instance
+        .collection('order')
+        .doc()
+        .set(orderModel.toMap())
+        .then((value) async {
+      print('Save Order Success');
+
+      // ระบบตัด Stock และ Clear ตระกล้า
+
+      for (var item in sqliteModels) {
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(item.docUser)
+            .collection('stock')
+            .doc(item.docStock)
+            .collection('product')
+            .doc(item.docProduct)
+            .get()
+            .then((value) async {
+          ProductModel productModel = ProductModel.fromMap(value.data()!);
+          int newAmountProduct =
+              productModel.amountProduct - int.parse(item.amount);
+
+          Map<String, dynamic> data = {};
+          data['amountProduct'] = newAmountProduct;
+
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(item.docUser)
+              .collection('stock')
+              .doc(item.docStock)
+              .collection('product')
+              .doc(item.docProduct)
+              .update(data)
+              .then((value) {
+            print('Success Update ${item.nameProduct}');
+          });
+        });
+      }
+      await SQLiteHelper().deleteAllData().then((value) => readSQLite());
+    });
+
+    // print(
+    //     'uidBuyer = $uidBuyer, typePayment = $typePayment, typeTransfer = $typeTransfer');
+    // print('orderModel ==>>> ${orderModel.toMap()}');
   }
 }

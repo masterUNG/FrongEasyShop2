@@ -19,6 +19,7 @@ class MyConstant {
   static String routInsertProfileShop = '/insertProfileShop';
   static String routEditProfileShop = '/editProfileShop';
   static String routProfileBuyer = '/profileBuyer';
+  static String routOrderHistoryBuyer = '/orderHistoryBuyer';
 
   static Color primart = const Color(0xffa08a59);
   static Color dark = const Color(0xff705d2f);

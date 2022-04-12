@@ -23,7 +23,7 @@ class _ServiceBuyerState extends State<ServiceBuyer> {
     MyConstant.routProfileBuyer,
     MyConstant.routShowShopForBuyer,
     '',
-    '',
+    MyConstant.routOrderHistoryBuyer,
   ];
 
   @override

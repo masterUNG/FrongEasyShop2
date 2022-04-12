@@ -14,6 +14,7 @@ import 'package:frongeasyshop/states/edit_shop_profile.dart';
 import 'package:frongeasyshop/states/forgotpassword.dart';
 import 'package:frongeasyshop/states/insert_profile_shop.dart';
 import 'package:frongeasyshop/states/order_history.dart';
+import 'package:frongeasyshop/states/order_history_buyer.dart';
 import 'package:frongeasyshop/states/order_status.dart';
 import 'package:frongeasyshop/states/profile_buyer.dart';
 
@@ -47,8 +48,9 @@ Map<String, WidgetBuilder> map = {
       const InsertProfileShop(),
   MyConstant.routEditProfileShop: (BuildContext context) =>
       const EditProfileShop(),
-      MyConstant.routProfileBuyer: (BuildContext context) =>
-      const ProfileBuyer(),
+  MyConstant.routProfileBuyer: (BuildContext context) => const ProfileBuyer(),
+  MyConstant.routOrderHistoryBuyer: (BuildContext context) =>
+      const OrderHistoryBuyer(),
 };
 
 String? firstState;
@@ -57,7 +59,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp().then((value) async {
     print('initial Success');
-     FirebaseAuth.instance.authStateChanges().listen((event) async {
+    FirebaseAuth.instance.authStateChanges().listen((event) async {
       if (event != null) {
         String uid = event.uid;
         await FirebaseFirestore.instance
@@ -89,8 +91,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
- 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -99,4 +99,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

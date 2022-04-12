@@ -9,6 +9,7 @@ import 'package:frongeasyshop/utility/find_user.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
+import 'package:intl/intl.dart';
 
 class OrderHistory extends StatefulWidget {
   const OrderHistory({Key? key}) : super(key: key);
@@ -88,11 +89,34 @@ class _OrderHistoryState extends State<OrderHistory> {
           : haveData!
               ? ListView.builder(
                   itemCount: orderModels.length,
-                  itemBuilder: (context, index) => Row(
-                    children: [
-                      ShowText(title: 'ชื่อผู้สั่ง'),
-                      ShowText(title: userModelsBuyer[index].name),
-                    ],
+                  itemBuilder: (context, index) => Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          newLabel(
+                            title: 'ชื่อผู้สั่ง :',
+                            subTitle: userModelsBuyer[index].name,
+                          ),
+                          newLabel(
+                              title: 'วันสั่งของ :',
+                              subTitle: changeDateToString(
+                                  orderModels[index].dateOrder)),
+                          newLabel(
+                              title: 'วิธีการรับสินค้า :',
+                              subTitle: orderModels[index].typeTransfer),
+                          newLabel(
+                              title: 'วิธีการชำระสินค้า :',
+                              subTitle: orderModels[index].typePayment),
+                          newLabel(
+                              title: 'สถาณะ :',
+                              subTitle: orderModels[index].status),
+                          newLabel(
+                              title: 'Total :',
+                              subTitle: orderModels[index].totalOrder),
+                        ],
+                      ),
+                    ),
                   ),
                 )
               : Center(
@@ -101,6 +125,23 @@ class _OrderHistoryState extends State<OrderHistory> {
                     textStyle: MyConstant().h1Style(),
                   ),
                 ),
+    );
+  }
+
+  String changeDateToString(Timestamp timestamp) {
+    DateFormat dateFormat = DateFormat('dd MMM yyyy');
+    DateTime dateTime = timestamp.toDate();
+    String string = dateFormat.format(dateTime);
+    return string;
+  }
+
+  Row newLabel({required String title, required String subTitle}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ShowText(title: title),
+        ShowText(title: subTitle),
+      ],
     );
   }
 }

@@ -30,7 +30,10 @@ class _ServiceBuyerState extends State<ServiceBuyer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [ShowAddCart() ,ShowSignOut()],
+        actions: [
+          ShowAddCart(),
+          ShowSignOut(),
+        ],
         backgroundColor: MyConstant.primart,
         title: const Text('ส่วนของลูกค้า'),
       ),

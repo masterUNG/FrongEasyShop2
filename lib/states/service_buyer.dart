@@ -20,7 +20,7 @@ class _ServiceBuyerState extends State<ServiceBuyer> {
   ];
 
   var keyRoutes = <String>[
-    '',
+    MyConstant.routProfileBuyer,
     MyConstant.routShowShopForBuyer,
     '',
     '',

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +15,7 @@ import 'package:frongeasyshop/states/forgotpassword.dart';
 import 'package:frongeasyshop/states/insert_profile_shop.dart';
 import 'package:frongeasyshop/states/order_history.dart';
 import 'package:frongeasyshop/states/order_status.dart';
+import 'package:frongeasyshop/states/profile_buyer.dart';
 
 import 'package:frongeasyshop/states/service_buyer.dart';
 import 'package:frongeasyshop/states/service_shopper.dart';
@@ -44,6 +47,8 @@ Map<String, WidgetBuilder> map = {
       const InsertProfileShop(),
   MyConstant.routEditProfileShop: (BuildContext context) =>
       const EditProfileShop(),
+      MyConstant.routProfileBuyer: (BuildContext context) =>
+      const ProfileBuyer(),
 };
 
 String? firstState;
@@ -52,7 +57,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp().then((value) async {
     print('initial Success');
-    await FirebaseAuth.instance.authStateChanges().listen((event) async {
+     FirebaseAuth.instance.authStateChanges().listen((event) async {
       if (event != null) {
         String uid = event.uid;
         await FirebaseFirestore.instance

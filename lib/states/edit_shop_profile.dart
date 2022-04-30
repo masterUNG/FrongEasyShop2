@@ -74,31 +74,35 @@ class _EditShopProFileState extends State<EditShopProFile> {
           : haveProfile!
               ? profileShopModel == null
                   ? const ShowProcess()
-                  : Center(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: 200,
-                            height: 200,
-                            child: Image.network(profileShopModel!.pathImage),
-                          ),
-                          ShowText(
-                            title: profileShopModel!.nameShop,
-                            textStyle: MyConstant().h2Style(),
-                          ),
-                          ShowText(
-                            title: profileShopModel!.address,
-                            textStyle: MyConstant().h3Style(),
-                          ),
-                        ],
-                      ),
-                    )
+                  : newContent()
               : Center(
                   child: ShowText(
                   title: 'No Profile',
                   textStyle: MyConstant().h1Style(),
                 )),
     );
+  }
+
+  Center newContent() {
+    return Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Image.network(profileShopModel!.pathImage),
+                        ),
+                        ShowText(
+                          title: profileShopModel!.nameShop,
+                          textStyle: MyConstant().h2Style(),
+                        ),
+                        ShowText(
+                          title: profileShopModel!.address,
+                          textStyle: MyConstant().h3Style(),
+                        ),
+                      ],
+                    ),
+                  );
   }
 
   ElevatedButton buttonInsertOrEdit(BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frongeasyshop/models/user_mdel.dart';
+import 'package:frongeasyshop/states/edit_profile_buyer.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
@@ -44,14 +45,18 @@ class _ProfileBuyerState extends State<ProfileBuyer> {
         backgroundColor: MyConstant.primart,
         title: const Text('ข้อมูลส่วนตัว'),
       ),
+      floatingActionButton:
+          ElevatedButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileBuyer(),));
+          }, child: const Text('Edit Profile')),
       body: load
           ? const Center(child: ShowProcess())
           : Column(
-            children: [
-              newLabel(head: 'ชื่อ :', value: userModel!.name),
-              newLabel(head: 'Email :', value: userModel!.email)
-            ],
-          ),
+              children: [
+                newLabel(head: 'ชื่อ :', value: userModel!.name),
+                newLabel(head: 'Email :', value: userModel!.email)
+              ],
+            ),
     );
   }
 

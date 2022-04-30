@@ -58,18 +58,43 @@ class _ShowProductForShoperState extends State<ShowProductForShoper> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyConstant.primart,
-        title: Text('สินค้า'),
+        title: const Text('สินค้า'),
       ),
       body: load
-          ? const ShowProcess(
-        
-          )
-          
-          : ListView.builder(
-              itemCount: productModels.length,
-              itemBuilder: (context, index) =>
-                  ShowText(title: productModels[index].nameProduct),
-            ),
+          ? const ShowProcess()
+          : LayoutBuilder(builder: (context, constraints) {
+              return ListView.builder(
+                itemCount: productModels.length,
+                itemBuilder: (context, index) => Card(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: constraints.maxWidth * 0.5-8,height: constraints.maxWidth * 0.4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network(productModels[index].pathProduct),
+                        ),
+                      ),
+                      SizedBox(
+                        width: constraints.maxWidth * 0.5,height: constraints.maxWidth * 0.4,
+                        child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShowText(title: productModels[index].nameProduct),
+                            ShowText(
+                                title:
+                                    'Price = ${productModels[index].priceProduct}'),
+                            ShowText(
+                                title:
+                                    'Stock = ${productModels[index].amountProduct}'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
     );
   }
 }

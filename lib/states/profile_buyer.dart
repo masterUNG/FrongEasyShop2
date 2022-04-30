@@ -34,6 +34,7 @@ class _ProfileBuyerState extends State<ProfileBuyer> {
       setState(() {
         load = false;
         userModel = UserModel.fromMap(value.data()!);
+        print('userModel buyer ==> ${userModel!.toMap()}');
       });
     });
   }
@@ -45,16 +46,27 @@ class _ProfileBuyerState extends State<ProfileBuyer> {
         backgroundColor: MyConstant.primart,
         title: const Text('ข้อมูลส่วนตัว'),
       ),
-      floatingActionButton:
-          ElevatedButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfileBuyer(),));
-          }, child: const Text('Edit Profile')),
+      floatingActionButton: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfileBuyer(
+                    userModel: userModel!,
+                  ),
+                )).then((value) {
+              readProfile();
+            });
+          },
+          child: const Text('Edit Profile')),
       body: load
           ? const Center(child: ShowProcess())
           : Column(
               children: [
                 newLabel(head: 'ชื่อ :', value: userModel!.name),
-                newLabel(head: 'Email :', value: userModel!.email)
+                newLabel(head: 'Email :', value: userModel!.email),
+                newLabel(head: 'ที่อยู่ :', value: userModel!.address!),
+                newLabel(head: 'เบอร์โทร :', value: userModel!.phone!)
               ],
             ),
     );
@@ -62,13 +74,18 @@ class _ProfileBuyerState extends State<ProfileBuyer> {
 
   Row newLabel({required String head, required String value}) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        ShowText(
-          title: head,
-          textStyle: MyConstant().h2Style(),
+        Expanded(
+          flex: 1,
+          child: ShowText(
+            title: head,
+            textStyle: MyConstant().h2Style(),
+          ),
         ),
-        ShowText(title: value),
+        Expanded(
+          flex: 2,
+          child: ShowText(title: value),
+        ),
       ],
     );
   }

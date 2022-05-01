@@ -26,7 +26,6 @@ class _ShowProductForShoperState extends State<ShowProductForShoper> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     docUser = widget.docUser;
     docStock = widget.docStock;

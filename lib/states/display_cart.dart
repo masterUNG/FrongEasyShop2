@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -478,12 +479,12 @@ class _DisplayCartState extends State<DisplayCart> {
         uidShopper: sqliteModels[0].docUser,
         urlSlip: urlSlip);
 
-    await FirebaseFirestore.instance
-        .collection('order')
-        .doc()
-        .set(orderModel.toMap())
-        .then((value) async {
-      print('Save Order Success');
+    DocumentReference reference =
+        FirebaseFirestore.instance.collection('order').doc();
+
+    await reference.set(orderModel.toMap()).then((value) async {
+      String docId = reference.id;
+      print('## Save Order Success $docId');
 
       // ระบบตัด Stock และ Clear ตระกล้า
 

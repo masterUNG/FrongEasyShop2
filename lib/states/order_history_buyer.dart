@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frongeasyshop/models/order_model.dart';
 import 'package:frongeasyshop/models/user_mdel.dart';
+import 'package:frongeasyshop/states/detail_order_buyer.dart';
 import 'package:frongeasyshop/utility/find_user.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
@@ -35,6 +36,7 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
     await FirebaseFirestore.instance
         .collection('order')
         .where('uidBuyer', isEqualTo: user!.uid)
+        // .orderBy('dateOrder')
         .get()
         .then((value) async {
       print('value ==> ${value.docs}');
@@ -43,7 +45,7 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
       } else {
         haveData = true;
         for (var item in value.docs) {
-          // print('item ===> ${item.data()}');
+          print('item ===> ${item.data()}');
 
           var results = item.data()['mapOrders'];
           var mapOrders = <Map<String, dynamic>>[];
@@ -89,32 +91,40 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
           : haveData!
               ? ListView.builder(
                   itemCount: orderModels.length,
-                  itemBuilder: (context, index) => Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          newLabel(
-                            title: 'ร้านสั่ง :',
-                            subTitle: userModelsBuyer[index].name,
-                          ),
-                          newLabel(
-                              title: 'วันสั่งของ :',
-                              subTitle: changeDateToString(
-                                  orderModels[index].dateOrder)),
-                          newLabel(
-                              title: 'วิธีการรับสินค้า :',
-                              subTitle: orderModels[index].typeTransfer),
-                          newLabel(
-                              title: 'วิธีการชำระสินค้า :',
-                              subTitle: orderModels[index].typePayment),
-                          newLabel(
-                              title: 'สถาณะ :',
-                              subTitle: orderModels[index].status),
-                          newLabel(
-                              title: 'Total :',
-                              subTitle: orderModels[index].totalOrder),
-                        ],
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetailOrderBuyer(orderModel: orderModels[index]),
+                        )),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            newLabel(
+                              title: 'ร้านสั่ง :',
+                              subTitle: userModelsBuyer[index].name,
+                            ),
+                            newLabel(
+                                title: 'วันสั่งของ :',
+                                subTitle: changeDateToString(
+                                    orderModels[index].dateOrder)),
+                            newLabel(
+                                title: 'วิธีการรับสินค้า :',
+                                subTitle: orderModels[index].typeTransfer),
+                            newLabel(
+                                title: 'วิธีการชำระสินค้า :',
+                                subTitle: orderModels[index].typePayment),
+                            newLabel(
+                                title: 'สถาณะ :',
+                                subTitle: orderModels[index].status),
+                            newLabel(
+                                title: 'Total :',
+                                subTitle: orderModels[index].totalOrder),
+                          ],
+                        ),
                       ),
                     ),
                   ),

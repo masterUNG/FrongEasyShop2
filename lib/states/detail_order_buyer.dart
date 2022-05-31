@@ -1,0 +1,127 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:frongeasyshop/models/user_mdel.dart';
+import 'package:frongeasyshop/utility/find_user.dart';
+import 'package:frongeasyshop/utility/my_constant.dart';
+import 'package:intl/intl.dart';
+
+import 'package:frongeasyshop/models/order_model.dart';
+import 'package:frongeasyshop/widgets/show_text.dart';
+
+class DetailOrderBuyer extends StatefulWidget {
+  final OrderModel orderModel;
+
+  const DetailOrderBuyer({
+    Key? key,
+    required this.orderModel,
+  }) : super(key: key);
+
+  @override
+  State<DetailOrderBuyer> createState() => _DetailOrderBuyerState();
+}
+
+class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
+  OrderModel? orderModel;
+  String? nameShop;
+
+  @override
+  void initState() {
+    super.initState();
+    orderModel = widget.orderModel;
+    findNameShop();
+  }
+
+  Future<void> findNameShop() async {
+    UserModel userModel =
+        await FindUser(uid: orderModel!.uidShopper).findUserModel();
+    setState(() {
+      nameShop = userModel.name;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: MyConstant.primart,
+        title: const Text('รายละเอียดการสั่งซื่อสินค้า'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            newLabel(
+              title: 'ร้านสั่ง :',
+              subTitle: nameShop ?? '',
+            ),
+            newLabel(
+                title: 'วันสั่งของ :',
+                subTitle: changeDateToString(orderModel!.dateOrder)),
+            newLabel(
+                title: 'วิธีการรับสินค้า :',
+                subTitle: orderModel!.typeTransfer),
+            newLabel(
+                title: 'วิธีการชำระสินค้า :',
+                subTitle: orderModel!.typePayment),
+            newLabel(title: 'สถาณะ :', subTitle: orderModel!.status),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: orderModel!.mapOrders.length,
+              itemBuilder: (context, index) => Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: ShowText(
+                      title: orderModel!.mapOrders[index]['nameProduct'],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ShowText(
+                      title: orderModel!.mapOrders[index]['price'],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ShowText(
+                      title: orderModel!.mapOrders[index]['amount'],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ShowText(
+                      title: orderModel!.mapOrders[index]['sum'],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            newLabel(title: 'Total :', subTitle: orderModel!.totalOrder),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row newLabel({required String title, required String subTitle}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ShowText(
+          title: title,
+          textStyle: MyConstant().h2Style(),
+        ),
+        ShowText(title: subTitle),
+      ],
+    );
+  }
+
+  String changeDateToString(Timestamp timestamp) {
+    DateFormat dateFormat = DateFormat('dd MMM yyyy');
+    DateTime dateTime = timestamp.toDate();
+    String string = dateFormat.format(dateTime);
+    return string;
+  }
+}

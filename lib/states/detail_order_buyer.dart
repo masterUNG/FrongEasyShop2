@@ -65,6 +65,32 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                 title: 'วิธีการชำระสินค้า :',
                 subTitle: orderModel!.typePayment),
             newLabel(title: 'สถาณะ :', subTitle: orderModel!.status),
+            Divider(
+              color: MyConstant.dark,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: ShowText(title: 'รายการ'),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: ShowText(title: 'ราคา'),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: ShowText(title: 'จำนวน'),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: ShowText(title: 'รวม'),
+                ),
+              ],
+            ),
+            Divider(
+              color: MyConstant.dark,
+            ),
             ListView.builder(
               shrinkWrap: true,
               physics: const ScrollPhysics(),
@@ -98,7 +124,27 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                 ],
               ),
             ),
-            newLabel(title: 'Total :', subTitle: orderModel!.totalOrder),
+            Divider(
+              color: MyConstant.dark,
+            ),
+            Row(
+              children: [
+                Expanded(flex: 4,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ShowText(
+                        title: 'ผลรวมทั้งหมด :   ',
+                        textStyle: MyConstant().h2Style(),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(flex: 1,
+                  child: ShowText(title: orderModel!.totalOrder, textStyle: MyConstant().h2Style(),),
+                ),
+              ],
+            ),
+           
           ],
         ),
       ),

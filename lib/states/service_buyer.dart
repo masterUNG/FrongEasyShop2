@@ -15,14 +15,12 @@ class _ServiceBuyerState extends State<ServiceBuyer> {
   var titles = <String>[
     'ข้อมูลส่วนตัว',
     'เลือกร้านค้า',
-    // 'สถานะสินค้า',
     'ประวัติราการสั่งซื้อ',
   ];
 
   var keyRoutes = <String>[
     MyConstant.routProfileBuyer,
     MyConstant.routShowShopForBuyer,
-    // '',
     MyConstant.routOrderHistoryBuyer,
   ];
 

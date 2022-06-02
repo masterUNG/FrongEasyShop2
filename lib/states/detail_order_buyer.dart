@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frongeasyshop/models/user_mdel.dart';
 import 'package:frongeasyshop/utility/find_user.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
+import 'package:frongeasyshop/widgets/show_button.dart';
 import 'package:intl/intl.dart';
 
 import 'package:frongeasyshop/models/order_model.dart';
@@ -129,8 +130,10 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
             ),
             Row(
               children: [
-                Expanded(flex: 4,
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end,
+                Expanded(
+                  flex: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ShowText(
                         title: 'ผลรวมทั้งหมด :   ',
@@ -139,12 +142,24 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                     ],
                   ),
                 ),
-                Expanded(flex: 1,
-                  child: ShowText(title: orderModel!.totalOrder, textStyle: MyConstant().h2Style(),),
+                Expanded(
+                  flex: 1,
+                  child: ShowText(
+                    title: orderModel!.totalOrder,
+                    textStyle: MyConstant().h2Style(),
+                  ),
                 ),
               ],
             ),
-           
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ShowButton(
+                  label: 'รับสินค้า',
+                  pressFunc: () {},
+                ),
+              ],
+            ),
           ],
         ),
       ),

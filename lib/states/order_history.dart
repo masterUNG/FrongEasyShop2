@@ -37,13 +37,13 @@ class _OrderHistoryState extends State<OrderHistory> {
         .where('uidShopper', isEqualTo: user!.uid)
         .get()
         .then((value) async {
-      print('value ==> ${value.docs}');
+      print('## value order history ==> ${value.docs}');
       if (value.docs.isEmpty) {
         haveData = false;
       } else {
         haveData = true;
         for (var item in value.docs) {
-          // print('item ===> ${item.data()}');
+          print('## item ===> ${item.data()}');
 
           var results = item.data()['mapOrders'];
           var mapOrders = <Map<String, dynamic>>[];
@@ -62,11 +62,11 @@ class _OrderHistoryState extends State<OrderHistory> {
               uidShopper: item.data()['uidShopper'],
               urlSlip: item.data()['urlSlip']);
 
-          print('orderModel ===> ${orderModel.toMap()}');
+          print('## orderModel ===> ${orderModel.toMap()}');
 
           UserModel userModel =
               await FindUser(uid: orderModel.uidBuyer).findUserModel();
-          print('userModel ===>> ${userModel.toMap()}');
+          print('## userModel ===>> ${userModel.toMap()}');
           userModelsBuyer.add(userModel);
 
           orderModels.add(orderModel);

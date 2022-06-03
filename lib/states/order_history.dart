@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frongeasyshop/models/order_model.dart';
 import 'package:frongeasyshop/models/user_mdel.dart';
+import 'package:frongeasyshop/states/detail_order_seller.dart';
 import 'package:frongeasyshop/utility/find_user.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
@@ -24,6 +25,7 @@ class _OrderHistoryState extends State<OrderHistory> {
   bool? haveData;
   var orderModels = <OrderModel>[];
   var userModelsBuyer = <UserModel>[];
+  var docIdOrders = <String>[];
 
   @override
   void initState() {
@@ -70,6 +72,7 @@ class _OrderHistoryState extends State<OrderHistory> {
           userModelsBuyer.add(userModel);
 
           orderModels.add(orderModel);
+          docIdOrders.add(item.id);
         }
       }
       load = false;
@@ -89,32 +92,41 @@ class _OrderHistoryState extends State<OrderHistory> {
           : haveData!
               ? ListView.builder(
                   itemCount: orderModels.length,
-                  itemBuilder: (context, index) => Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          newLabel(
-                            title: 'ชื่อผู้สั่ง :',
-                            subTitle: userModelsBuyer[index].name,
-                          ),
-                          newLabel(
-                              title: 'วันสั่งของ :',
-                              subTitle: changeDateToString(
-                                  orderModels[index].dateOrder)),
-                          newLabel(
-                              title: 'วิธีการรับสินค้า :',
-                              subTitle: orderModels[index].typeTransfer),
-                          newLabel(
-                              title: 'วิธีการชำระสินค้า :',
-                              subTitle: orderModels[index].typePayment),
-                          newLabel(
-                              title: 'สถาณะ :',
-                              subTitle: orderModels[index].status),
-                          newLabel(
-                              title: 'Total :',
-                              subTitle: orderModels[index].totalOrder),
-                        ],
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailOrderSeller(docIdOrder: docIdOrders[index],),
+                          ));
+                    },
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            newLabel(
+                              title: 'ชื่อผู้สั่ง :',
+                              subTitle: userModelsBuyer[index].name,
+                            ),
+                            newLabel(
+                                title: 'วันสั่งของ :',
+                                subTitle: changeDateToString(
+                                    orderModels[index].dateOrder)),
+                            newLabel(
+                                title: 'วิธีการรับสินค้า :',
+                                subTitle: orderModels[index].typeTransfer),
+                            newLabel(
+                                title: 'วิธีการชำระสินค้า :',
+                                subTitle: orderModels[index].typePayment),
+                            newLabel(
+                                title: 'สถาณะ :',
+                                subTitle: orderModels[index].status),
+                            newLabel(
+                                title: 'Total :',
+                                subTitle: orderModels[index].totalOrder),
+                          ],
+                        ),
                       ),
                     ),
                   ),

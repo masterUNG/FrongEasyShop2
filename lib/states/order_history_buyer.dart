@@ -24,6 +24,7 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
   bool load = true;
   bool? haveData;
   var orderModels = <OrderModel>[];
+  var docIdOrders = <String>[];
   var userModelsBuyer = <UserModel>[];
 
   @override
@@ -33,6 +34,13 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
   }
 
   Future<void> readOrder() async {
+    if (orderModels.isNotEmpty) {
+      orderModels.clear();
+      docIdOrders.clear();
+      userModelsBuyer.clear();
+      load = true;
+      setState(() {});
+    }
     await FirebaseFirestore.instance
         .collection('order')
         .where('uidBuyer', isEqualTo: user!.uid)
@@ -72,6 +80,7 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
           userModelsBuyer.add(userModel);
 
           orderModels.add(orderModel);
+          docIdOrders.add(item.id);
         }
       }
       load = false;
@@ -95,9 +104,11 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              DetailOrderBuyer(orderModel: orderModels[index]),
-                        )),
+                          builder: (context) => DetailOrderBuyer(
+                            orderModel: orderModels[index],
+                            docIdOrder: docIdOrders[index],
+                          ),
+                        )).then((value) => readOrder()),
                     child: Card(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),

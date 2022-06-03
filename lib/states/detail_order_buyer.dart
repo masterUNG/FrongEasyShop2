@@ -1,21 +1,23 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:frongeasyshop/utility/my_process.dart';
+import 'package:intl/intl.dart';
+
+import 'package:frongeasyshop/models/order_model.dart';
 import 'package:frongeasyshop/models/user_mdel.dart';
 import 'package:frongeasyshop/utility/find_user.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/widgets/show_button.dart';
-import 'package:intl/intl.dart';
-
-import 'package:frongeasyshop/models/order_model.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
 
 class DetailOrderBuyer extends StatefulWidget {
   final OrderModel orderModel;
-
+  final String docIdOrder;
   const DetailOrderBuyer({
     Key? key,
     required this.orderModel,
+    required this.docIdOrder,
   }) : super(key: key);
 
   @override
@@ -151,19 +153,44 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                 ),
               ],
             ),
-           orderModel!.status == 'receive' ?  Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ShowButton(
-                  label: 'รับสินค้า',
-                  pressFunc: () {},
-                ),
-              ],
-            ) : const SizedBox() 
+            orderModel!.status == 'receive'
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ShowButton(
+                        label: 'รับสินค้า',
+                        pressFunc: () {
+                          processReceiveProduct();
+                        },
+                      ),
+                    ],
+                  )
+                : const SizedBox()
           ],
         ),
       ),
     );
+  }
+
+  Future<void> processReceiveProduct() async {
+    Map<String, dynamic> map = {};
+    map['status'] = 'finish';
+    await FirebaseFirestore.instance
+        .collection('order')
+        .doc(widget.docIdOrder)
+        .update(map)
+        .then((value) async {
+      UserModel userModel =
+          await MyProcess().findUserModel(uid: orderModel!.uidShopper);
+      await MyProcess()
+          .sentNotification(
+              title: 'ได้รับสินค้าแล้ว',
+              body: 'ลูกค้าได้รับ สินค้าแล้ว',
+              token: userModel.token!)
+          .then((value) {
+        Navigator.pop(context);
+      });
+    });
   }
 
   Row newLabel({required String title, required String subTitle}) {

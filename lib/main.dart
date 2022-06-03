@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -56,6 +58,8 @@ Map<String, WidgetBuilder> map = {
 String? firstState;
 
 Future<void> main() async {
+  HttpOverrides.global = MyHttpOverride();
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp().then((value) async {
     print('initial Success');
@@ -97,5 +101,13 @@ class MyApp extends StatelessWidget {
       routes: map,
       initialRoute: firstState,
     );
+  }
+}
+
+class MyHttpOverride extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (cert, host, port) => true;
   }
 }

@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
+import 'package:frongeasyshop/utility/my_process.dart';
 import 'package:frongeasyshop/widgets/show_signout.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
 
@@ -24,6 +28,74 @@ class _ServiceShopperState extends State<ServiceShopper> {
     MyConstant.routOrderHistory,
     MyConstant.routOrderStatus,
   ];
+
+  var user = FirebaseAuth.instance.currentUser;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationPlugin =
+      FlutterLocalNotificationsPlugin();
+  InitializationSettings? initializationSettings;
+  AndroidInitializationSettings? androidInitializationSettings;
+
+  @override
+  void initState() {
+    super.initState();
+    processMessaging();
+    configLocalNotification();
+  }
+
+  Future<void> configLocalNotification() async {
+    androidInitializationSettings =
+        const AndroidInitializationSettings('app_icon');
+    initializationSettings =
+        InitializationSettings(android: androidInitializationSettings);
+    await flutterLocalNotificationPlugin.initialize(
+      initializationSettings!,
+      onSelectNotification: onSelectNoti,
+    );
+
+
+    FirebaseMessaging.onMessage.listen((event) {
+      String? title = event.notification!.title;
+      String? body = event.notification!.body;
+      processShowLocalNotification(title: title!, body: body!);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+       String? title = event.notification!.title;
+      String? body = event.notification!.body;
+      processShowLocalNotification(title: title!, body: body!);
+    });
+  }
+
+  Future<void> onSelectNoti(String? string) async {
+    if (string != null) {
+      print(' onSelect Work');
+    }
+  }
+
+  Future<void> processShowLocalNotification(
+      {required String title, required String body}) async {
+    AndroidNotificationDetails androidNotificationDetails =
+        const AndroidNotificationDetails(
+      'channelId',
+      'channelName',
+      priority: Priority.high,
+      importance: Importance.max,
+      ticker: 'Noti',
+    );
+    NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationPlugin.show(
+        0, title, body, notificationDetails);
+  }
+
+  Future<void> processMessaging() async {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    String? token = await firebaseMessaging.getToken();
+    print('token seller ==> $token');
+    await MyProcess().updateToken(docIdUser: user!.uid, token: token!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -2,8 +2,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:frongeasyshop/models/order_model.dart';
+import 'package:frongeasyshop/models/user_mdel.dart';
 
 import 'package:frongeasyshop/utility/my_constant.dart';
+import 'package:frongeasyshop/utility/my_process.dart';
 import 'package:frongeasyshop/widgets/show_button.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
 import 'package:frongeasyshop/widgets/show_text.dart';
@@ -59,110 +61,148 @@ class _DetailOrderSellerState extends State<DetailOrderSeller> {
                 newLabel(
                     title: 'วันสั่งสินค้า :',
                     subTitle: changeDateToString(orderModel!.dateOrder)),
-                newLabel(title: 'วิธีรับสินค้า :', subTitle: orderModel!.typeTransfer),
-                newLabel(title: 'วิธีชำระสินค้า :', subTitle: orderModel!.typePayment),
+                newLabel(
+                    title: 'วิธีรับสินค้า :',
+                    subTitle: orderModel!.typeTransfer),
+                newLabel(
+                    title: 'วิธีชำระสินค้า :',
+                    subTitle: orderModel!.typePayment),
                 newLabel(title: 'สถาณะ :', subTitle: orderModel!.status),
-                Divider(color: MyConstant.dark,),
+                Divider(
+                  color: MyConstant.dark,
+                ),
                 Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: ShowText(title: 'รายการ'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ShowText(title: 'ราคา'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ShowText(title: 'จำนวน'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ShowText(title: 'รวม'),
-                ),
-              ],
-            ),
-            Divider(
-              color: MyConstant.dark,
-            ), ListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: orderModel!.mapOrders.length,
-              itemBuilder: (context, index) => Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: ShowText(
-                      title: orderModel!.mapOrders[index]['nameProduct'],
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: ShowText(title: 'รายการ'),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: ShowText(
-                      title: orderModel!.mapOrders[index]['price'],
+                    Expanded(
+                      flex: 1,
+                      child: ShowText(title: 'ราคา'),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: ShowText(
-                      title: orderModel!.mapOrders[index]['amount'],
+                    Expanded(
+                      flex: 1,
+                      child: ShowText(title: 'จำนวน'),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: ShowText(
-                      title: orderModel!.mapOrders[index]['sum'],
+                    Expanded(
+                      flex: 1,
+                      child: ShowText(title: 'รวม'),
                     ),
-                  ),
-                ],
-              ),
-            ), Divider(
-              color: MyConstant.dark,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  ],
+                ),
+                Divider(
+                  color: MyConstant.dark,
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  itemCount: orderModel!.mapOrders.length,
+                  itemBuilder: (context, index) => Row(
                     children: [
-                      ShowText(
-                        title: 'ผลรวมทั้งหมด :   ',
-                        textStyle: MyConstant().h2Style(),
+                      Expanded(
+                        flex: 2,
+                        child: ShowText(
+                          title: orderModel!.mapOrders[index]['nameProduct'],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: ShowText(
+                          title: orderModel!.mapOrders[index]['price'],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: ShowText(
+                          title: orderModel!.mapOrders[index]['amount'],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: ShowText(
+                          title: orderModel!.mapOrders[index]['sum'],
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: ShowText(
-                    title: orderModel!.totalOrder,
-                    textStyle: MyConstant().h2Style(),
-                  ),
+                Divider(
+                  color: MyConstant.dark,
                 ),
-              ],
-            ),
-            orderModel!.status == 'order' ?   Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
                 Row(
                   children: [
-                    ShowButton(
-                      label: 'Receive Order',
-                      pressFunc: () {},
-                    ),const SizedBox(width: 8,),
-                    ShowButton(
-                      label: 'Cancel Order',
-                      pressFunc: () {},
-                    ),const SizedBox(width: 8,),
+                    Expanded(
+                      flex: 4,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ShowText(
+                            title: 'ผลรวมทั้งหมด :   ',
+                            textStyle: MyConstant().h2Style(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: ShowText(
+                        title: orderModel!.totalOrder,
+                        textStyle: MyConstant().h2Style(),
+                      ),
+                    ),
                   ],
                 ),
-              ],
-            ) : const SizedBox()
+                orderModel!.status == 'order'
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              ShowButton(
+                                label: 'Receive Order',
+                                pressFunc: () {
+                                  processTakeOrder(status: 'receive');
+                                },
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              ShowButton(
+                                label: 'Cancel Order',
+                                pressFunc: () {
+                                  processTakeOrder(status: 'cancel');
+                                },
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : const SizedBox()
               ],
             ),
     );
+  }
+
+  Future<void> processTakeOrder({required String status}) async {
+    UserModel userModel =
+        await MyProcess().findUserModel(uid: orderModel!.uidBuyer);
+    await MyProcess().sentNotification(
+        title: '$status รายการสั่งซื่อ',
+        body: 'ทางร้าน ได้ $status รายการสั่งซื่อของคุณลูกค้า',
+        token: userModel.token!);
+    Map<String, dynamic> map = {};
+    map['status'] = status;
+    await FirebaseFirestore.instance
+        .collection('order')
+        .doc(docIdOrder)
+        .update(map)
+        .then((value) {
+      Navigator.pop(context);
+    });
   }
 
   Row newLabel({required String title, required String subTitle}) {

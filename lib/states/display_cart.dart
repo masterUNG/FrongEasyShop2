@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -14,8 +13,10 @@ import 'package:frongeasyshop/models/order_model.dart';
 import 'package:frongeasyshop/models/product_model.dart';
 import 'package:frongeasyshop/models/profile_shop_model.dart';
 import 'package:frongeasyshop/models/sqlite_model.dart';
+import 'package:frongeasyshop/models/user_mdel.dart';
 import 'package:frongeasyshop/utility/my_constant.dart';
 import 'package:frongeasyshop/utility/my_dialog.dart';
+import 'package:frongeasyshop/utility/my_process.dart';
 import 'package:frongeasyshop/utility/sqlite_helper.dart';
 import 'package:frongeasyshop/widgets/show_image_from_url.dart';
 import 'package:frongeasyshop/widgets/show_process.dart';
@@ -518,11 +519,19 @@ class _DisplayCartState extends State<DisplayCart> {
           });
         });
       }
-      await SQLiteHelper().deleteAllData().then((value) => readSQLite());
-    });
+      await SQLiteHelper().deleteAllData().then((value) async {
+        UserModel userModel =
+            await MyProcess().findUserModel(uid: orderModel.uidShopper);
 
-    // print(
-    //     'uidBuyer = $uidBuyer, typePayment = $typePayment, typeTransfer = $typeTransfer');
-    // print('orderModel ==>>> ${orderModel.toMap()}');
+        await MyProcess()
+            .sentNotification(
+                title: 'มีรายการสั่งสินค้า',
+                body: 'มีีรายการสั่งซื้อสินค้า จาก ลูกค้าครับ',
+                token: userModel.token!)
+            .then((value) {
+          readSQLite();
+        });
+      });
+    });
   }
 }

@@ -8,6 +8,7 @@ class UserModel {
   final String typeuser;
   final String? address;
   final String? phone;
+  final String? token;
   UserModel({
     required this.email,
     required this.name,
@@ -15,6 +16,7 @@ class UserModel {
     required this.typeuser,
     this.address,
     this.phone,
+    this.token,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class UserModel {
       'typeuser': typeuser,
       'address': address,
       'phone': phone,
+      'token': token,
     };
   }
 
@@ -34,12 +37,11 @@ class UserModel {
       name: (map['name'] ?? '') as String,
       password: (map['password'] ?? '') as String,
       typeuser: (map['typeuser'] ?? '') as String,
-      address: map['address'] != null ? map['address'] as String : '',
-      phone: map['phone'] != null ? map['phone'] as String : '',
+      address: map['address'] != null ? map['address'] as String : null,
+      phone: map['phone'] != null ? map['phone'] as String : null,
+      token: map['token'] != null ? map['token'] as String : null,
     );
   }
-
-  String toJson() => json.encode(toMap());
 
   factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

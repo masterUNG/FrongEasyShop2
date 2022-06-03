@@ -34,6 +34,14 @@ class _OrderHistoryState extends State<OrderHistory> {
   }
 
   Future<void> readOrder() async {
+    if (orderModels.isNotEmpty) {
+      orderModels.clear();
+      userModelsBuyer.clear();
+      docIdOrders.clear();
+      load = true;
+      setState(() {});
+    }
+
     await FirebaseFirestore.instance
         .collection('order')
         .where('uidShopper', isEqualTo: user!.uid)
@@ -97,8 +105,12 @@ class _OrderHistoryState extends State<OrderHistory> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DetailOrderSeller(docIdOrder: docIdOrders[index],),
-                          ));
+                            builder: (context) => DetailOrderSeller(
+                              docIdOrder: docIdOrders[index],
+                            ),
+                          )).then((value) {
+                        readOrder();
+                      });
                     },
                     child: Card(
                       child: Padding(

@@ -151,7 +151,7 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                 ),
               ],
             ),
-            Row(
+           orderModel!.status == 'receive' ?  Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ShowButton(
@@ -159,7 +159,7 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                   pressFunc: () {},
                 ),
               ],
-            ),
+            ) : const SizedBox() 
           ],
         ),
       ),

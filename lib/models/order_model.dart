@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,7 +26,7 @@ class OrderModel {
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'dateOrder': dateOrder,
       'mapOrders': mapOrders,
       'status': status,
@@ -41,18 +42,16 @@ class OrderModel {
   factory OrderModel.fromMap(Map<String, dynamic> map) {
     return OrderModel(
       dateOrder: (map['dateOrder']),
-      mapOrders: (map['mapOrders']),
-      status: map['status'] ?? '',
-      totalOrder: map['totalOrder'] ?? '',
-      typePayment: map['typePayment'] ?? '',
-      typeTransfer: map['typeTransfer'] ?? '',
-      uidBuyer: map['uidBuyer'] ?? '',
-      uidShopper: map['uidShopper'] ?? '',
-      urlSlip: map['urlSlip'] ?? '',
+      mapOrders: List<Map<String, dynamic>>.from(map['mapOrders']),
+      status: (map['status'] ?? '') as String,
+      totalOrder: (map['totalOrder'] ?? '') as String,
+      typePayment: (map['typePayment'] ?? '') as String,
+      typeTransfer: (map['typeTransfer'] ?? '') as String,
+      uidBuyer: (map['uidBuyer'] ?? '') as String,
+      uidShopper: (map['uidShopper'] ?? '') as String,
+      urlSlip: (map['urlSlip'] ?? '') as String,
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory OrderModel.fromJson(String source) => OrderModel.fromMap(json.decode(source));
+  factory OrderModel.fromJson(String source) => OrderModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

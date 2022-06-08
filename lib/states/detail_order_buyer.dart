@@ -165,6 +165,19 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
                       ),
                     ],
                   )
+                : const SizedBox(),
+            orderModel!.status == 'order'
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ShowButton(
+                        label: 'Cancel Order',
+                        pressFunc: () {
+                          processCancelOrder();
+                        },
+                      ),
+                    ],
+                  )
                 : const SizedBox()
           ],
         ),
@@ -186,6 +199,27 @@ class _DetailOrderBuyerState extends State<DetailOrderBuyer> {
           .sentNotification(
               title: 'ได้รับสินค้าแล้ว',
               body: 'ลูกค้าได้รับ สินค้าแล้ว',
+              token: userModel.token!)
+          .then((value) {
+        Navigator.pop(context);
+      });
+    });
+  }
+
+  Future<void> processCancelOrder() async {
+    Map<String, dynamic> map = {};
+    map['status'] = 'cancel';
+    await FirebaseFirestore.instance
+        .collection('order')
+        .doc(widget.docIdOrder)
+        .update(map)
+        .then((value) async {
+      UserModel userModel =
+          await MyProcess().findUserModel(uid: orderModel!.uidShopper);
+      await MyProcess()
+          .sentNotification(
+              title: 'Cancel Order',
+              body: 'ลูกค้าได้ Cancel สินค้าแล้ว',
               token: userModel.token!)
           .then((value) {
         Navigator.pop(context);

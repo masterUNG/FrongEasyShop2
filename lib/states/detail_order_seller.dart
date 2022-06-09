@@ -26,12 +26,21 @@ class _DetailOrderSellerState extends State<DetailOrderSeller> {
   String? docIdOrder;
   bool load = true;
   OrderModel? orderModel;
+  UserModel? userModel;
 
   @override
   void initState() {
     super.initState();
     docIdOrder = widget.docIdOrder;
     readOrder();
+  }
+
+  Future<void> findDetailBuyer() async {
+    await MyProcess().findUserModel(uid: orderModel!.uidBuyer).then((value) {
+      setState(() {
+        userModel = value;
+      });
+    });
   }
 
   Future<void> readOrder() async {
@@ -43,6 +52,7 @@ class _DetailOrderSellerState extends State<DetailOrderSeller> {
       orderModel = OrderModel.fromMap(value.data()!);
       load = false;
       setState(() {});
+      findDetailBuyer();
     });
   }
 
@@ -68,6 +78,9 @@ class _DetailOrderSellerState extends State<DetailOrderSeller> {
                     title: 'วิธีชำระสินค้า :',
                     subTitle: orderModel!.typePayment),
                 newLabel(title: 'สถาณะ :', subTitle: orderModel!.status),
+                newLabel(
+                    title: 'ที่อยู่จัดส่ง :',
+                    subTitle: userModel == null ? '' : userModel!.address!),
                 Divider(
                   color: MyConstant.dark,
                 ),
@@ -206,14 +219,18 @@ class _DetailOrderSellerState extends State<DetailOrderSeller> {
   }
 
   Row newLabel({required String title, required String subTitle}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Row(crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ShowText(
-          title: title,
-          textStyle: MyConstant().h2Style(),
+        Expanded(
+          flex: 1,
+          child: ShowText(
+            title: title,
+            textStyle: MyConstant().h2Style(),
+          ),
         ),
-        ShowText(title: subTitle),
+        Expanded(flex: 1,
+          child: ShowText(title: subTitle),
+        ),
       ],
     );
   }

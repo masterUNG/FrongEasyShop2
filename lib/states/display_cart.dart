@@ -529,7 +529,9 @@ class _DisplayCartState extends State<DisplayCart> {
                 body: 'มีีรายการสั่งซื้อสินค้า จาก ลูกค้าครับ',
                 token: userModel.token!)
             .then((value) {
-          readSQLite();
+          // readSQLite();
+          Navigator.pushNamedAndRemoveUntil(
+              context, MyConstant.routServiceBuyer, (route) => false);
         });
       });
     });

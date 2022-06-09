@@ -43,45 +43,46 @@ class _OrderHistoryBuyerState extends State<OrderHistoryBuyer> {
     }
     await FirebaseFirestore.instance
         .collection('order')
-        .where('uidBuyer', isEqualTo: user!.uid)
-        // .orderBy('dateOrder')
+        // .where('uidBuyer', isEqualTo: user!.uid)
+        .orderBy('dateOrder', descending: true)
         .get()
         .then((value) async {
-      print('value ==> ${value.docs}');
       if (value.docs.isEmpty) {
         haveData = false;
       } else {
-        haveData = true;
         for (var item in value.docs) {
-          print('item ===> ${item.data()}');
+          OrderModel orderModel2 = OrderModel.fromMap(item.data());
 
-          var results = item.data()['mapOrders'];
-          var mapOrders = <Map<String, dynamic>>[];
-          for (var item in results) {
-            mapOrders.add(item);
+          if (orderModel2.uidBuyer == user!.uid) {
+            var results = item.data()['mapOrders'];
+            var mapOrders = <Map<String, dynamic>>[];
+            for (var item in results) {
+              mapOrders.add(item);
+            }
+
+            OrderModel orderModel = OrderModel(
+                dateOrder: item.data()['dateOrder'],
+                mapOrders: mapOrders,
+                status: item.data()['status'],
+                totalOrder: item.data()['totalOrder'],
+                typePayment: item.data()['typePayment'],
+                typeTransfer: item.data()['typeTransfer'],
+                uidBuyer: item.data()['uidBuyer'],
+                uidShopper: item.data()['uidShopper'],
+                urlSlip: item.data()['urlSlip']);
+
+            print('orderModel ===> ${orderModel.toMap()}');
+
+            UserModel userModel =
+                await FindUser(uid: orderModel.uidShopper).findUserModel();
+            print('userModel ===>> ${userModel.toMap()}');
+            userModelsBuyer.add(userModel);
+
+            orderModels.add(orderModel);
+            docIdOrders.add(item.id);
           }
-
-          OrderModel orderModel = OrderModel(
-              dateOrder: item.data()['dateOrder'],
-              mapOrders: mapOrders,
-              status: item.data()['status'],
-              totalOrder: item.data()['totalOrder'],
-              typePayment: item.data()['typePayment'],
-              typeTransfer: item.data()['typeTransfer'],
-              uidBuyer: item.data()['uidBuyer'],
-              uidShopper: item.data()['uidShopper'],
-              urlSlip: item.data()['urlSlip']);
-
-          print('orderModel ===> ${orderModel.toMap()}');
-
-          UserModel userModel =
-              await FindUser(uid: orderModel.uidShopper).findUserModel();
-          print('userModel ===>> ${userModel.toMap()}');
-          userModelsBuyer.add(userModel);
-
-          orderModels.add(orderModel);
-          docIdOrders.add(item.id);
         }
+        haveData = true;
       }
       load = false;
       setState(() {});

@@ -37,9 +37,9 @@ class UserModel {
       name: (map['name'] ?? '') as String,
       password: (map['password'] ?? '') as String,
       typeuser: (map['typeuser'] ?? '') as String,
-      address: map['address'] != null ? map['address'] as String : null,
-      phone: map['phone'] != null ? map['phone'] as String : null,
-      token: map['token'] != null ? map['token'] as String : null,
+      address: map['address'] ?? '',
+      phone: map['phone'] ?? '',
+      token: map['token'] ?? '',
     );
   }
 
